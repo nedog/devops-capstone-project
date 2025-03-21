@@ -107,6 +107,8 @@ class TestAccountService(TestCase):
         self.assertEqual(new_account["address"], account.address)
         self.assertEqual(new_account["phone_number"], account.phone_number)
         self.assertEqual(new_account["date_joined"], str(account.date_joined))
+        print(new_account)
+        return (new_account["id"])
 
     def test_bad_request(self):
         """It should not Create an Account when sending the wrong data"""
@@ -124,3 +126,30 @@ class TestAccountService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
     # ADD YOUR TEST CASES HERE ...
+
+    def test_list(self):
+        """It should get 200_OK from request"""
+        response = self.client.get("/accounts")
+        print(response.data)
+        self.assertEqual(response.status_code, 200)
+        obj = response.get_json()
+        self.assertIsInstance(obj, list)
+
+    def post_account(self):
+        """"""
+        account = AccountFactory()
+        response = self.client.post(
+            BASE_URL,
+            json=account.serialize(),
+            content_type="test/html"
+        )
+        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    def test_read_account(self):
+        """It should accept an account_id and return account, otherwise 404"""
+        id = str(self.test_create_account());
+        print("id-" + id)
+        resp = self.client.get("/accounts/" + id)
+        self.assertEqual(resp.status_code, 200)
+        resp_1 = self.client.get("/accounts/999")
+        self.assertEqual(resp_1.status_code, 404)
