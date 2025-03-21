@@ -159,4 +159,13 @@ class TestAccountService(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response_1.status_code, 404)
-        
+    
+    def test_delete_account(self):
+        """It should delete account, otherwise 204"""
+        response = self.client.delete("/accounts/1")
+        id = str(self.test_create_account());
+        resp_1 = self.client.delete("/accounts/" + id)
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.data, b"")
+        self.assertEqual(resp_1.status_code, 204)
+        self.assertEqual(resp_1.data, b"")
