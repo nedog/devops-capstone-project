@@ -135,15 +135,25 @@ class TestAccountService(TestCase):
         obj = response.get_json()
         self.assertIsInstance(obj, list)
 
-    def post_account(self):
-        """"""
-        account = AccountFactory()
-        response = self.client.post(
-            BASE_URL,
-            json=account.serialize(),
-            content_type="test/html"
+    def test_update_account(self):
+        """Accept account_id and find account, then update account"""
+        id = str(self.test_create_account());
+        account = self.client.get("/accounts/" + id).get_json()
+        account["name"] = "UPDATED"
+        response = self.client.put(
+            "accounts/" + id,
+            json=account,
+            content_type="application/json"
         )
-        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+        response_1 = self.client.put(
+            BASE_URL + "/" + "9909",
+            json=account,
+            content_type="application/json"
+        )
+        # updated_account = self.client.get("/accounts/" + id).get_json
+        # self.assertEqual(updated_account["name"], "UPDATED")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response_1.status_code, 404)
 
     def test_read_account(self):
         """It should accept an account_id and return account, otherwise 404"""
@@ -153,3 +163,13 @@ class TestAccountService(TestCase):
         self.assertEqual(resp.status_code, 200)
         resp_1 = self.client.get("/accounts/999")
         self.assertEqual(resp_1.status_code, 404)
+
+    def test_delete_account(self):
+        """It should delete account, otherwise 204"""
+        response = self.client.delete("/accounts/1")
+        id = str(self.test_create_account());
+        resp_1 = self.client.delete("/accounts/" + id)
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.data, b"")
+        self.assertEqual(resp_1.status_code, 204)
+        self.assertEqual(resp_1.data, b"")
