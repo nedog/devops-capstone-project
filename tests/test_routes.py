@@ -141,4 +141,22 @@ class TestAccountService(TestCase):
         self.assertEqual(resp.status_code, 200)
         resp_1 = self.client.get("/accounts/999")
         self.assertEqual(resp_1.status_code, 404)
+
+    def test_update_account(self):
+        """Accept account_id and find account, then update account"""
+        id = str(self.test_create_account());
+        account = self.client.get("/accounts/" + id).get_json()
+        account["name"] = "UPDATED"
+        response = self.client.put(
+            "accounts/" + id,
+            json=account,
+            content_type="application/json"
+        )
+        response_1 = self.client.put(
+            BASE_URL + "/" + "9909",
+            json=account,
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response_1.status_code, 404)
         
