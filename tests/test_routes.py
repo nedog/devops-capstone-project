@@ -124,3 +124,11 @@ class TestAccountService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
     # ADD YOUR TEST CASES HERE ...
+    def test_list(self):
+        """It should get 200_OK from request"""
+        response = self.client.get("/accounts")
+        print(response.data)
+        self.assertEqual(response.status_code, 200)
+        obj = response.get_json()
+        self.assertIsInstance(obj, list)
+        
