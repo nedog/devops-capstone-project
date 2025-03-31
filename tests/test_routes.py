@@ -137,7 +137,7 @@ class TestAccountService(TestCase):
 
     def test_read_account(self):
         """It should accept an account_id and return account, otherwise 404"""
-        id = str(self.test_create_account());
+        id = str(self.test_create_account())
         print("id-" + id)
         resp = self.client.get("/accounts/" + id)
         self.assertEqual(resp.status_code, 200)
@@ -146,7 +146,7 @@ class TestAccountService(TestCase):
 
     def test_update_account(self):
         """Accept account_id and find account, then update account"""
-        id = str(self.test_create_account());
+        id = str(self.test_create_account())
         account = self.client.get("/accounts/" + id).get_json()
         account["name"] = "UPDATED"
         response = self.client.put(
@@ -161,11 +161,11 @@ class TestAccountService(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response_1.status_code, 404)
-    
+
     def test_delete_account(self):
         """It should delete account, otherwise 204"""
         response = self.client.delete("/accounts/1")
-        id = str(self.test_create_account());
+        id = str(self.test_create_account())
         resp_1 = self.client.delete("/accounts/" + id)
         self.assertEqual(response.status_code, 204)
         self.assertEqual(response.data, b"")
@@ -184,9 +184,10 @@ class TestAccountService(TestCase):
         }
         for key, value in headers.items():
             self.assertEqual(response.headers.get(key), value)
-    
+
     def test_cors_security(self):
         """Should return a CORS header"""
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.headers.get('Access-Control-Allow-Origin'), '*')
+      
